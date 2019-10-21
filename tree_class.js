@@ -1,20 +1,19 @@
-
 module.exports = class Node {
   constructor(content, type) {
 
-    this.type = type;
     this.content = content;
+    this.type = type;
 
     if (type == 'binary') {
-      this.left = [new Node(null,null)];
-      this.right = [new Node(null,null)];
+      this.left = new Node(null,null);
+      this.right = new Node(null,null);
 
     } else if (type == 'unary') {
-      this.child = [new Node(null,null)];
+      this.child = new Node(null,null);
 
     } else if (type == 'implication')  {
-      this.ant = [new Node(null,null)];
-      this.con = [new Node(null,null)];
+      this.ant = new Node(null,null);
+      this.con = new Node(null,null);
 
     } else if (type == 'literal') {
     }

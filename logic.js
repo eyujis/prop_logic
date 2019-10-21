@@ -1,11 +1,11 @@
 const Node = require('./tree_class.js');
 
 function reason (KB, x) {
-
+  console.log(x)
   for (i=0; i<KB.length; i++)  {
 
     //trivial
-    if (x.content==KB[i].content) {
+    if (x.type=='literal' && x.content==KB[i].content) {
       return true
     }
 
@@ -21,11 +21,10 @@ function reason (KB, x) {
         return true
       }
     }
-
     //[FIX] not in sentence
-    if (x.content = 'NOT')  {
-
-      if(reason(KB[i].child,x))  {
+    if (KB[i] = 'NOT')  {
+      console.log('ENTROU')
+      if(reason([KB[i].child],x))  {
         console.log('False by negation in Knowledge base')
         return false
       } else {
@@ -46,13 +45,12 @@ function reason (KB, x) {
 }
 
 
-push test with not in sentense
-
-var tree = [];
-tree.push(new Node('NOT', 'unary'));
-tree[0].child.push(new Node('a', 'literal'))
-var query = new Node ('a','literal');
-reason(tree, query);
+//test with not in sentense
+var forest = [];
+forest.push(new Node('NOT', 'unary'));
+forest[0].child = new Node('a', 'literal');
+var query = new Node('a','literal');
+reason(forest, query);
 
 
 
