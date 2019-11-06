@@ -1,21 +1,23 @@
 module.exports = class Node {
-  constructor(content, type) {
+  constructor(content) {
 
     this.content = content;
-    this.type = type;
+    this.operand = false;
 
-    if (type == 'binary') {
-      this.left = new Node(null,null);
-      this.right = new Node(null,null);
+    if (content == 'OR' || content == 'AND') {
+      this.operand = true;
+      this.left = new Node(null);
+      this.right = new Node(null);
 
-    } else if (type == 'unary') {
-      this.child = new Node(null,null);
+    } else if (content == 'NOT') {
+      this.operand = true;
+      this.child = new Node(null);
 
-    } else if (type == 'implication')  {
-      this.ant = new Node(null,null);
-      this.con = new Node(null,null);
+    } else if (content == 'IMP')  {
+      this.operand = true;
+      this.ant = new Node(null);
+      this.con = new Node(null);
 
-    } else if (type == 'literal') {
     }
   }
 }

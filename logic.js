@@ -1,43 +1,59 @@
 const Node = require('./tree_class.js');
 
-function reason (KB, x) {
-  console.log(x)
+
+function reason (KB, query) {
+  
   for (i=0; i<KB.length; i++)  {
 
     //trivial
-    if (x.type=='literal' && x.content==KB[i].content) {
+    if (KB[i].operand == false && query.operand==false && query.content==KB[i].content) {
+      console.log('True by trivial')
       return true
     }
 
     //not in query
-    if (x.content=='NOT') {
+    if (query.content=='NOT') {
 
-      if(reason(KB, x.child)) {
+      if(reason(KB, query.child)) {
         console.log('False by negation in query')
         return false
       }
-      else {
+      else  {
         console.log('True by negation in query')
         return true
       }
     }
-    //[FIX] not in sentence
-    if (KB[i] = 'NOT')  {
-      console.log('ENTROU')
-      if(reason([KB[i].child],x))  {
-        console.log('False by negation in Knowledge base')
+
+    // not in knowledge base
+    if (KB[i].content == 'NOT') {
+
+      if (reason([KB[i].child], query)) {
+        console.log('False by negation in KB')
         return false
-      } else {
-        return true
-        console.log('True by negation in Knowledge base')
+
       }
+      else  {
+        console.log('True by negation in KB')
+        return true
+
+      }
+
+    }
+
+    //disjunction introduction
+    if (query.content=='OR' && (reason(KB, query.left)  || reason(KB, query.right))) {
+      console.log('True by Disjunction Introduction')
+      return true
     }
 
     //conjunction introduction
-    if (x.content=='OR' && (reason(KB, x.left)  || reason(KB,x.right))) {
+    if (query.content=='AND' && (reason(KB, query.left)  && reason(KB, query.right))) {
       console.log('True by Conjunction Introduction')
       return true
     }
+
+
+
 
   }
   console.log('FALSE')
@@ -45,12 +61,83 @@ function reason (KB, x) {
 }
 
 
-//test with not in sentense
-var forest = [];
-forest.push(new Node('NOT', 'unary'));
-forest[0].child = new Node('a', 'literal');
-var query = new Node('a','literal');
-reason(forest, query);
+//trivial | expecting true [WORKING]
+var KB = [];
+KB.push(new Node ('a'));
+var query =  new Node ('a');
+console.log ('-------------------------\n true X', reason(KB, query), '\n=========================\n\n');
+
+// test with not in sentense | expecting false[WORKING]
+var KB = [];
+KB.push(new Node ('a'));
+var query = new Node ('NOT');
+query.child = new Node ('a');
+console.log ('-------------------------\n false X', reason(KB, query), '\n=========================\n\n');
+
+// double negation in query | expecting true [WORKING]
+var KB = [];
+KB.push(new Node ('a'));
+var query = new Node ('NOT');
+query.child = new Node ('NOT')
+query.child.child = new Node ('a');
+console.log ('-------------------------\n true X', reason(KB, query), '\n=========================\n\n');
+
+//negation in knowledge base | expecting false [WORKING]
+var KB = [];
+KB.push(new Node ('NOT'));
+KB[0].child = new Node ('a');
+var query = new Node ('a')
+console.log ('-------------------------\n false X', reason(KB, query), '\n=========================\n\n');
+
+//double negation in knowledge base | expecting true [WORKING]
+var KB = [];
+KB.push(new Node ('NOT'));
+KB[0].child = new Node ('NOT');
+KB[0].child.child = new Node ('a');
+var query = new Node ('a')
+console.log ('-------------------------\n true X', reason(KB, query), '\n=========================\n\n');
+
+//disjunction introduction | expecting true
+var KB = [];
+KB.push(new Node ('a'));
+var query = new Node ('OR');
+query.left = new Node ('a');
+query.right = new Node ('b');
+console.log ('-------------------------\n true X', reason(KB, query), '\n=========================\n\n');
+
+//disjunction introduction | expecting false
+var KB = [];
+KB.push(new Node ('a'));
+var query = new Node ('OR');
+query.left = new Node ('c');
+query.right = new Node ('b');
+console.log ('-------------------------\n false X', reason(KB, query), '\n=========================\n\n');
+
+//conjunction introduction | expecting true
+var KB = [];
+KB.push(new Node ('a'));
+var query = new Node ('AND');
+query.left = new Node ('a');
+query.right = new Node ('a');
+console.log ('-------------------------\n true X', reason(KB, query), '\n=========================\n\n');
+
+//conjunction introduction | expecting false
+var KB = [];
+KB.push(new Node ('a'));
+var query = new Node ('AND');
+query.left = new Node ('a');
+query.right = new Node ('b');
+console.log ('-------------------------\n false X', reason(KB, query), '\n=========================\n\n');
+
+//triple negation in KB | expecting false
+var KB = [];
+KB.push(new Node ('NOT'));
+KB[0].child = new Node ('NOT');
+KB[0].child.child = new Node ('NOT');
+KB[0].child.child.child = new Node ('a');
+var query = new Node ('a')
+console.log ('-------------------------\n false X', reason(KB, query), '\n=========================\n\n');
+
 
 
 
