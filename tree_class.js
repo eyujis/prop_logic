@@ -2,35 +2,35 @@ module.exports = class Node {
   constructor(content) {
 
     this.content = content;
-    this.operand = false;
+    this.operator = false;
 
     if (content == 'OR' || content == 'AND') {
-      this.operand = true;
+      this.operator = true;
       
       this.left = new Node(null);
       this.left.content = null;
-      this.left.operand = null;
+      this.left.operator = null;
       
       this.right = new Node(null);
       this.right.content = null;
-      this.right.operand = null;
+      this.right.operator = null;
 
     } else if (content == 'NOT') {
-      this.operand = true;
+      this.operator = true;
       
       this.child = new Node(null);
       this.child.content = null;
-      this.child.operand = null;
+      this.child.operator = null;
 
     } else if (content == 'IMP')  {
-      this.operand = true;
+      this.operator = true;
       
       this.ant = new Node(null);
       this.ant.content = null;
-      this.ant.operand = null;
+      this.ant.operator = null;
       this.con = new Node(null);
       this.con.content = null;
-      this.con.operand = null;
+      this.con.operator = null;
 
     }
   }
