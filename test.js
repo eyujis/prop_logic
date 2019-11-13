@@ -12,7 +12,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var KB = [];
 		KB.push(new Node ('a'));
 		var query =  new Node ('a');
-		assert.equal(true, reason(KB,query));
+		assert.equal(true, s_reason(KB,query));
 	});
 
 	//negation in query
@@ -22,7 +22,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB.push(new Node ('a'));
 		var query = new Node ('NOT');
 		query.child = new Node ('a');
-		assert.equal(false, reason(KB,query));
+		assert.equal(false, s_reason(KB,query));
 
 	});
 
@@ -34,7 +34,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('NOT');
 		query.child = new Node ('NOT')
 		query.child.child = new Node ('a');
-		assert.equal(true, reason(KB,query));
+		assert.equal(true, s_reason(KB,query));
 
 	});
 
@@ -46,7 +46,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB.push(new Node ('NOT'));
 		KB[0].child = new Node ('a');
 		var query = new Node ('a')
-		assert.equal(false, reason(KB,query));
+		assert.equal(false, s_reason(KB,query));
 
 	});
 
@@ -59,7 +59,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[0].child = new Node ('NOT');
 		KB[0].child.child = new Node ('a');
 		var query = new Node ('a')
-		assert.equal(true, reason(KB,query));
+		assert.equal(true, s_reason(KB,query));
 
 	});
 
@@ -73,7 +73,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[0].child.child = new Node ('NOT');
 		KB[0].child.child.child = new Node ('a');
 		var query = new Node ('a')
-		assert.equal(false, reason(KB,query));
+		assert.equal(false, s_reason(KB,query));
 
 	});
 
@@ -86,7 +86,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('OR');
 		query.left = new Node ('a');
 		query.right = new Node ('b');
-		assert.equal(true, reason(KB,query));
+		assert.equal(true, s_reason(KB,query));
 
 	});
 
@@ -99,7 +99,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('OR');
 		query.left = new Node ('c');
 		query.right = new Node ('b');
-		assert.equal(false, reason(KB,query));
+		assert.equal(false, s_reason(KB,query));
 
 	});
 
@@ -111,7 +111,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('AND');
 		query.left = new Node ('a');
 		query.right = new Node ('a');
-		assert.equal(true, reason(KB,query));
+		assert.equal(true, s_reason(KB,query));
 
 	});
 
@@ -123,7 +123,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('AND');
 		query.left = new Node ('a');
 		query.right = new Node ('b');
-		assert.equal(false, reason(KB,query));
+		assert.equal(false, s_reason(KB,query));
 
 	});
 
@@ -136,7 +136,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[1].ant = new Node ('p');
 		KB[1].con = new Node ('q');
 		var query = new Node ('q');
-		assert.equal(true, reason(KB,query));
+		assert.equal(true, s_reason(KB,query));
 
 	});
 
@@ -149,7 +149,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[1].ant = new Node ('p');
 		KB[1].con = new Node ('q');
 		var query = new Node ('q');
-		assert.equal(false, reason(KB,query));
+		assert.equal(false, s_reason(KB,query));
 
 	});
 

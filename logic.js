@@ -1,9 +1,9 @@
 const Node = require('./tree_class.js');
 
 
-function reason (KB, query) {
+function reason (KB, query, i) {
   
-  for (var i=0; i<KB.length; i++)  {
+  // for (var i=0; i<KB.length; i++)  {
 
     //trivial
     if (KB[i].operator == false && query.operator==false && query.content==KB[i].content) {
@@ -15,7 +15,7 @@ function reason (KB, query) {
     //not in query
     if (query.content=='NOT') {
 
-      if(reason(KB, query.child)) {
+      if(s_reason(KB, query.child)) {
         //console.log('False by negation in query');
         return false;
       }
@@ -29,7 +29,7 @@ function reason (KB, query) {
     // not in knowledge base 
     if (KB[i].content == 'NOT') {
 
-      if (reason([KB[i].child], query)) {
+      if (s_reason([KB[i].child], query)) {
         //console.log('False by negation in KB');
         return false;
       }
@@ -41,21 +41,21 @@ function reason (KB, query) {
 
 
     //disjunction introduction
-    if (query.content=='OR' && (reason(KB, query.left)  || reason(KB, query.right))) {
+    if (query.content=='OR' && (s_reason(KB, query.left)  || s_reason(KB, query.right))) {
       //console.log('True by Disjunction Introduction');
       return true;
     }
 
 
     //conjunction introduction
-    if (query.content=='AND' && (reason(KB, query.left)  && reason(KB, query.right))) {
+    if (query.content=='AND' && (s_reason(KB, query.left)  && s_reason(KB, query.right))) {
       //console.log('True by Conjunction Introduction');
       return true;
     }
 
 
     // modus ponens
-    if (KB[i].content == 'IMP' && KB[i].con.content == query.content && reason(KB, KB[i].ant)) {
+    if (KB[i].content == 'IMP' && KB[i].con.content == query.content && s_reason(KB, KB[i].ant)) {
       //console.log('True by Modus Ponens');
       return true;
     }
@@ -67,7 +67,7 @@ function reason (KB, query) {
     //   return true;
     // }
       
-  }
+  // }
 
   return false;
   
@@ -77,7 +77,7 @@ function reason (KB, query) {
 function s_reason (KB, query)  {
   for (var i=0; i<KB.length; i++) {
     
-    if (reason([KB[i]], query))  {
+    if (reason(KB, query, i))  {
       return true;
     }
   }
