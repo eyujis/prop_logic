@@ -168,6 +168,20 @@ describe('Propositional Logic | Backward Chaining', function() {
 
 	});
 
+	//disjunctive syllogism
+	it('p OR q |- p', function()
+	{
+		var KB = [];
+		KB.push(new Node ('OR'));
+		KB[0].left = new Node ('p');
+		KB[0].right = new Node ('q');
+		var query = new Node ('p');
+		assert.equal(true, s_reason(KB,query));
+
+	});
+
+
+
 });
 
 

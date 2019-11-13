@@ -3,71 +3,75 @@ const Node = require('./tree_class.js');
 
 function reason (KB, query, i) {
   
-  // for (var i=0; i<KB.length; i++)  {
 
-    //trivial
-    if (KB[i].operator == false && query.operator==false && query.content==KB[i].content) {
-      //console.log('True by trivial');
+  //trivial
+  if (KB[i].operator == false && query.operator==false && query.content==KB[i].content) {
+    //console.log('True by trivial');
+    return true;
+  }
+
+
+  //not in query
+  if (query.content=='NOT') {
+
+    if(s_reason(KB, query.child)) {
+      //console.log('False by negation in query');
+      return false;
+    }
+    else  {
+      //console.log('True by negation in query');
       return true;
     }
+  }
 
 
-    //not in query
-    if (query.content=='NOT') {
+  // not in knowledge base 
+  if (KB[i].content == 'NOT') {
 
-      if(s_reason(KB, query.child)) {
-        //console.log('False by negation in query');
-        return false;
-      }
-      else  {
-        //console.log('True by negation in query');
-        return true;
-      }
+    if (s_reason([KB[i].child], query)) {
+      //console.log('False by negation in KB');
+      return false;
     }
-
-
-    // not in knowledge base 
-    if (KB[i].content == 'NOT') {
-
-      if (s_reason([KB[i].child], query)) {
-        //console.log('False by negation in KB');
-        return false;
-      }
-      else  {
-        //console.log('True by negation in KB');
-        return true;
-      }
-    }
-
-
-    //disjunction introduction
-    if (query.content=='OR' && (s_reason(KB, query.left)  || s_reason(KB, query.right))) {
-      //console.log('True by Disjunction Introduction');
+    else  {
+      //console.log('True by negation in KB');
       return true;
     }
+  }
 
 
-    //conjunction introduction
-    if (query.content=='AND' && (s_reason(KB, query.left)  && s_reason(KB, query.right))) {
-      //console.log('True by Conjunction Introduction');
-      return true;
-    }
+  //disjunction introduction
+  if (query.content=='OR' && (s_reason(KB, query.left)  || s_reason(KB, query.right))) {
+    //console.log('True by Disjunction Introduction');
+    return true;
+  }
 
 
-    // modus ponens
-    if (KB[i].content == 'IMP' && KB[i].con.content == query.content && s_reason(KB, KB[i].ant)) {
-      //console.log('True by Modus Ponens');
-      return true;
-    }
+  //conjunction introduction
+  if (query.content=='AND' && (s_reason(KB, query.left)  && s_reason(KB, query.right))) {
+    //console.log('True by Conjunction Introduction');
+    return true;
+  }
 
 
-    // //disjunctive syllogism [not tested yet]
-    // if (KB[i].content=='OR' && (reason([KB[i].left], query) && reason(KB, [KB[i].right])==false)||(reason([KB[i].right], query) && reason(KB, [KB[i].left])==false))  {
-    //   console.log('True by Disjuntive Syllogism');
-    //   return true;
-    // }
+  // modus ponens
+  if (KB[i].content == 'IMP' && KB[i].con.content == query.content && s_reason(KB, KB[i].ant)) {
+    //console.log('True by Modus Ponens');
+    return true;
+  }
+
+
+  //disjunctive syllogism 
+  if (KB[i].content=='OR' && (((s_reason([KB[i].left], query)) && s_reason(KB, KB[i].right)==false)))  {
+    console.log('True by Disjuntive Syllogism');
+    return true;
+  }
+
+  //disjunctive syllogism (looping infinito)
+  if (KB[i].content=='OR' && (((s_reason([KB[i].right], query)) && s_reason(KB, KB[i].left)==false)))  {
+    console.log('True by Disjuntive Syllogism');
+    return true;
+  }
       
-  // }
 
   return false;
   
