@@ -63,16 +63,13 @@ function reason (KB, query, i, reason_list) {
 
 
   //disjunctive syllogism 
-  if ((KB[i].content=='OR' && s_reason([KB[i].left], query, reason_list) && s_reason(KB, KB[i].right, reason_list)==false))  {
+  if (((KB[i].content=='OR' && s_reason([KB[i].left], query, reason_list) && s_reason(KB, KB[i].right, reason_list)==false)) || 
+    ((KB[i].content=='OR' && s_reason([KB[i].right], query, reason_list) && s_reason(KB, KB[i].left, reason_list)==false)))  {
     console.log('True by Disjuntive Syllogism');
     return true;
   }
 
-  //disjunctive syllogism 
-  if ((KB[i].content=='OR' && s_reason([KB[i].right], query, reason_list) && s_reason(KB, KB[i].left, reason_list)==false))  {
-    console.log('True by Disjuntive Syllogism');
-    return true;
-  }
+
 
 
 
@@ -91,7 +88,7 @@ function s_reason (KB, query, reason_list)  {
   for (var i=0; i<reason_list.length; i++) {
     if(reason_list[i]==arg_log) {
       console.log('FALSE')
-      return false;
+      return true;
     }
   }
   reason_list.push(arg_log);
