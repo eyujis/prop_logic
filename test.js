@@ -1,5 +1,6 @@
 const {reason} = require ('./logic.js');
 const {s_reason} = require ('./logic.js');
+const {search} = require ('./logic.js');
 const Node = require('./tree_class.js');
 var assert = require('assert');
 
@@ -12,7 +13,16 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var KB = [];
 		KB.push(new Node ('a'));
 		var query =  new Node ('a');
-		assert.equal(true, s_reason(KB,query));
+		assert.equal(s_reason(KB,query), true);
+	});
+
+	  //trivial
+	it('b |- a?', function()
+	{
+		var KB = [];
+		KB.push(new Node ('b'));
+		var query =  new Node ('a');
+		assert.equal(s_reason(KB,query), false);
 	});
 
 	//negation in query
@@ -22,8 +32,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB.push(new Node ('a'));
 		var query = new Node ('NOT');
 		query.child = new Node ('a');
-		assert.equal(false, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), false);
 	});
 
 	//double negation in query
@@ -34,8 +43,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('NOT');
 		query.child = new Node ('NOT')
 		query.child.child = new Node ('a');
-		assert.equal(true, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), true);
 	});
 
 
@@ -46,8 +54,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB.push(new Node ('NOT'));
 		KB[0].child = new Node ('a');
 		var query = new Node ('a')
-		assert.equal(false, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), false);
 	});
 
 
@@ -59,8 +66,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[0].child = new Node ('NOT');
 		KB[0].child.child = new Node ('a');
 		var query = new Node ('a')
-		assert.equal(true, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), true);
 	});
 
 
@@ -73,8 +79,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[0].child.child = new Node ('NOT');
 		KB[0].child.child.child = new Node ('a');
 		var query = new Node ('a')
-		assert.equal(false, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), false);
 	});
 
 
@@ -86,8 +91,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('OR');
 		query.left = new Node ('a');
 		query.right = new Node ('b');
-		assert.equal(true, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), true);
 	});
 
 
@@ -99,8 +103,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('OR');
 		query.left = new Node ('c');
 		query.right = new Node ('b');
-		assert.equal(false, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), false);
 	});
 
 	//conjunction introduction
@@ -111,8 +114,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('AND');
 		query.left = new Node ('a');
 		query.right = new Node ('a');
-		assert.equal(true, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), true);
 	});
 
 	//conjunction introduction
@@ -123,8 +125,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		var query = new Node ('AND');
 		query.left = new Node ('a');
 		query.right = new Node ('b');
-		assert.equal(false, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), false);
 	});
 
 	//modus ponens
@@ -136,8 +137,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[1].ant = new Node ('p');
 		KB[1].con = new Node ('q');
 		var query = new Node ('q');
-		assert.equal(true, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), true);
 	});
 
 	//modus ponens
@@ -149,8 +149,7 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[1].ant = new Node ('p');
 		KB[1].con = new Node ('q');
 		var query = new Node ('q');
-		assert.equal(false, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), false);
 	});
 
 	//modus ponens + double negation
@@ -164,9 +163,10 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[1].ant = new Node ('p');
 		KB[1].con = new Node ('q');
 		var query = new Node ('q');
-		assert.equal(true, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), true);
 	});
+
+
 
 	//disjunctive syllogism
 	it('p OR q |- p', function()
@@ -176,9 +176,79 @@ describe('Propositional Logic | Backward Chaining', function() {
 		KB[0].left = new Node ('p');
 		KB[0].right = new Node ('q');
 		var query = new Node ('p');
-		assert.equal(true, s_reason(KB,query));
-
+		assert.equal(s_reason(KB,query), true);
 	});
+
+
+	//double negation in knowledge base
+	it('~b, a |- c', function()
+	{
+		var KB = [];
+		KB.push(new Node ('NOT'));
+		KB[0].child = new Node ('b');
+		KB.push(new Node ('a'));
+		var query = new Node ('c');
+		assert.equal(s_reason(KB,query), false);
+	});
+
+
+
+
+
+
+
+	// //disjunctive syllogism + double negation
+	// it('~~q, p OR q |- p', function()
+	// {
+	// 	var KB = [];
+	// 	KB.push(new Node ('NOT'));
+	// 	KB[0].child = new Node ('NOT');
+	// 	KB[0].child.child = new Node ('q');
+	// 	KB.push(new Node ('OR'));
+	// 	KB[1].left = new Node ('p');
+	// 	KB[1].right = new Node ('q');
+	// 	var query = new Node ('p');
+	// 	assert.equal(false, s_reason(KB,query));
+
+	// });
+
+	// //disjunctive syllogism + 2 double negation
+	// it('~q, ~~p OR q |- p', function()
+	// {
+	// 	var KB = [];
+	// 	KB.push(new Node ('NOT'));
+	// 	KB[0].child = new Node ('q');
+	// 	KB.push(new Node ('OR'));
+	// 	KB[1].left = new Node ('NOT');
+	// 	KB[1].left.child = new Node ('NOT');
+	// 	KB[1].left.child.child = new Node ('p');
+	// 	KB[1].right = new Node ('q');
+	// 	var query = new Node ('p');
+	// 	assert.equal(true, s_reason(KB,query));
+
+	// });
+
+	// //disjunctive syllogism + 2 double negation
+	// it('~q, ~p OR q |- p', function()
+	// {
+	// 	var KB = [];
+	// 	KB.push(new Node ('NOT'));
+	// 	KB[0].child = new Node ('q');
+	// 	KB.push(new Node ('OR'));
+	// 	KB[1].left = new Node ('NOT');
+	// 	KB[1].left.child = new Node ('p');
+	// 	KB[1].right = new Node ('q');
+	// 	var query = new Node ('p');
+	// 	assert.equal(false, s_reason(KB,query));
+
+	// });
+
+
+
+
+
+
+
 
 
 

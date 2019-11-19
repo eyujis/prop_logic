@@ -2,7 +2,6 @@ const Node = require('./tree_class.js');
 
 
 function reason (KB, query, i) {
-  
 
   //trivial
   if (KB[i].operator == false && query.operator==false && query.content==KB[i].content) {
@@ -19,7 +18,7 @@ function reason (KB, query, i) {
       return false;
     }
     else  {
-      //console.log('True by negation in query');
+      // console.log('True by negation in query');
       return true;
     }
   }
@@ -29,10 +28,10 @@ function reason (KB, query, i) {
   if (KB[i].content == 'NOT') {
 
     if (s_reason([KB[i].child], query)) {
-      //console.log('False by negation in KB');
+      // console.log('False by negation in KB');
       return false;
     }
-    else  {
+    else {
       //console.log('True by negation in KB');
       return true;
     }
@@ -60,18 +59,14 @@ function reason (KB, query, i) {
   }
 
 
-  //disjunctive syllogism 
-  if (KB[i].content=='OR' && (((s_reason([KB[i].left], query)) && s_reason(KB, KB[i].right)==false)))  {
-    console.log('True by Disjuntive Syllogism');
-    return true;
-  }
+  // //disjunctive syllogism 
+  // if ((KB[i].content=='OR' && s_reason([KB[i].left], query) && s_reason(KB, KB[i].right)==false) || 
+  //   (KB[i].content=='OR' && s_reason([KB[i].right], query) && s_reason(KB, KB[i].left)==false))  {
+  //   console.log('True by Disjuntive Syllogism');
+  //   return true;
+  // }
 
-  //disjunctive syllogism (looping infinito)
-  if (KB[i].content=='OR' && (((s_reason([KB[i].right], query)) && s_reason(KB, KB[i].left)==false)))  {
-    console.log('True by Disjuntive Syllogism');
-    return true;
-  }
-      
+
 
   return false;
   
@@ -85,6 +80,36 @@ function s_reason (KB, query)  {
       return true;
     }
   }
+  return false;
+}
+
+
+function search (KB, query) {
+
+  for (var i=0; i<KB.length; i++) {
+
+    if(KB[i].content == query.content)  {
+      return true
+    }
+
+    if(KB[i].content == 'NOT' && search([KB[i].child], query))  {
+      return true
+    }
+
+    if(KB[i].content == 'AND' && (search([KB[i].left], query) || search([KB[i].right], query)))  {
+      return true
+    }
+
+    if(KB[i].content == 'OR' && (search([KB[i].left], query) || search([KB[i].right], query)))  {
+      return true
+    }
+
+    if(KB[i].content == 'IMP' && (search([KB[i].ant], query) || search([KB[i].con], query)))  {
+      return true
+    }
+
+  }
+
   return false;
 }
 
@@ -211,7 +236,7 @@ function s_reason (KB, query)  {
 // console.log ('-------------------------\n true X', s_reason(KB, query), '\n=========================\n\n');
 
 
-module.exports = {reason: reason, s_reason : s_reason};
+module.exports = {reason: reason, s_reason : s_reason, search : search};
 
 
 
