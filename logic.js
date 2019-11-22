@@ -83,16 +83,20 @@ function s_reason (KB, query, reason_list)  {
 
   var KB_str = JSON.stringify(KB); 
   var query_str = JSON.stringify(query); 
-  var arg_log = KB_str.concat(query_str);
+  var args = KB_str.concat(query_str);
 
+  /* checks if the same KB and query given as parameters, if so it will 
+  cause a infinite loop, so it returns false*/
   for (var i=0; i<reason_list.length; i++) {
-    if(reason_list[i]==arg_log) {
+    if(reason_list[i]==args) {
       console.log('FALSE')
-      return true;
+      return false;
     }
   }
-  reason_list.push(arg_log);
+  reason_list.push(args);
 
+
+  /*for each sentence in the KB*/
   for (var i=0; i<KB.length; i++) {
     
     if (reason(KB, query, i, reason_list))  {

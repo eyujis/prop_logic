@@ -183,13 +183,30 @@ describe('Propositional Logic | Backward Chaining', function() {
 
 
 	//disjunctive syllogism
-	it('p OR q |- p', function()
+	it('p OR q, ~q |- p', function()
 	{	
 		var reason_list = [];
 		var KB = [];
 		KB.push(new Node ('OR'));
 		KB[0].left = new Node ('p');
 		KB[0].right = new Node ('q');
+		KB.push(new Node ('NOT'));
+		KB[1].left = new Node ('q');
+
+		var query = new Node ('p');
+		assert.equal(s_reason(KB, query, reason_list), true);
+	});
+
+	//disjunctive syllogism
+	it('~q, p OR q |- p', function()
+	{	
+		var reason_list = [];
+		var KB = [];
+		KB.push(new Node ('NOT'));
+		KB[0].left = new Node ('q');
+		KB.push(new Node ('OR'));
+		KB[1].left = new Node ('p');
+		KB[1].right = new Node ('q');
 		var query = new Node ('p');
 		assert.equal(s_reason(KB, query, reason_list), true);
 	});
